@@ -16,19 +16,16 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      # Build a Docker image from Dockerfile in repo root
       - name: Build Docker image
         run: |
           docker build -t test-project-image .
 
-      # Save the Docker image to a tar file
       - name: Save Docker image as tarball
         run: |
           docker save test-project-image > test-project-image.tar
 
-      # Upload the tarball as a GitHub artifact
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-image
           path: test-project-image.tar
