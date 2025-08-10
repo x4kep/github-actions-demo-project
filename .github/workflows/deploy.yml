@@ -24,6 +24,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: List dist folder contents before copy
+        run: ls -la dist
+
       - name: Copy package.json into dist
         run: cp package.json dist/
 
@@ -35,10 +38,16 @@ jobs:
             echo "No Procfile found, skipping"
           fi
 
+      - name: List dist folder contents after copy
+        run: ls -la dist
+
       - name: Zip build folder with package.json and Procfile
         run: |
           cd dist
           zip -r ../my-app.zip .
+
+      - name: List root folder contents after zip
+        run: ls -la
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
