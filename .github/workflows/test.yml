@@ -1,51 +1,33 @@
-name: Deploy to AWS Elastic Beanstalk (AWS CLI)
+name: Test Project
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
-    env:
-      AWS_REGION: eu-north-1
-      S3_BUCKET: my-eb-deployments-12345
-      APP_NAME: node_simple_api
-      ENV_NAME: Nodesimpleapp-env
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Zip application bundle
-        run: zip -r my-app.zip . -x "*.git*" "node_modules/*"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: actions/setup-node@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          node-version: 20
 
-      - name: Upload zip to S3
-        run: aws s3 cp my-app.zip s3://${S3_BUCKET}/my-app-${{ github.sha }}.zip
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
 
-      - name: Create Elastic Beanstalk application version
-        run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name $APP_NAME \
-            --version-label my-app-${{ github.sha }} \
-            --source-bundle S3Bucket=$S3_BUCKET,S3Key=my-app-${{ github.sha }}.zip
+      - name: Build Docker image
+        run: docker build -t test-project-image .
 
-      - name: Update Elastic Beanstalk environment to new version
-        run: |
-          aws elasticbeanstalk update-environment \
-            --environment-name $ENV_NAME \
-            --version-label my-app-${{ github.sha }}
+      - name: Save Docker image as tarball
+        run: docker save test-project-image > test-project-image.tar
 
-      - name: Wait for deployment to complete
-        run: |
-          aws elasticbeanstalk wait environment-updated \
-            --environment-name $ENV_NAME
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: test-project-image.tar
