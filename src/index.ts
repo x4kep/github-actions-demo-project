@@ -26,10 +26,11 @@ app.use("/recipes", require("./routes/recipes"));
 
 async function startServer() {
   try {
-    // Load express app to listen on config port.
-    const port = 3000
+    // Use environment variable PORT if available, else fallback to 3000
+    const port = process.env.PORT || 3000;
+
     server = app.listen(port, () => {
-      console.log(`Service ready on :${port}`)
+      console.log(`Service ready on port ${port}`);
     });
   } catch (error) {
     console.error("Failed to connect to the database:", error);
