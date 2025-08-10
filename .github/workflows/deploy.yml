@@ -14,9 +14,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Zip application bundle
-        run: zip -r my-app.zip .
+        run: zip -r my-app.zip . -x "*.git*" "node_modules/*"
 
-      # Upload the zip to S3
       - name: Upload application bundle to S3
         run: aws s3 cp my-app.zip s3://my-eb-deployments-12345/my-app-${{ github.sha }}.zip
         env:
@@ -24,7 +23,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-north-1
 
-      # Debug: Check that the file exists in S3
       - name: Verify file in S3
         run: aws s3 ls s3://my-eb-deployments-12345/my-app-${{ github.sha }}.zip
         env:
@@ -32,7 +30,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-north-1
 
-      # Deploy to EB
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -40,7 +37,8 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: node_simple_api
           environment_name: Nodesimpleapp-env
-          version_label: my-app-${{ github.sha }}.zip
+          version_label: my-app-${{ github.sha }}
           region: eu-north-1
           existing_bucket_name: my-eb-deployments-12345
+          existing_bucket_key: my-app-${{ github.sha }}.zip
           wait_for_deployment: true
