@@ -26,7 +26,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: node_simple_api
           environment_name: Nodesimpleapp-env
-          version_label: my-app-${{ github.sha }}
           region: eu-north-1
           deployment_package: my-app.zip
           wait_for_deployment: true
