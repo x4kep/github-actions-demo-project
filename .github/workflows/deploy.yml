@@ -12,9 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: zip -r my-app.zip . -x "*.git*" "node_modules/*"
+      - name: Zip application bundle
+        run: zip -r my-app.zip . -x "*.git*" "node_modules/*"
 
-      - uses: einaregilsson/beanstalk-deploy@v21
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -22,4 +24,5 @@ jobs:
           environment_name: Nodesimpleapp-env
           region: eu-north-1
           deployment_package: my-app.zip
+          version_label: deploy-${{ github.run_number }}
           wait_for_deployment: true
