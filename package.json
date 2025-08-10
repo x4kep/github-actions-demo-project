@@ -11,7 +11,7 @@
     "build:config": "npx cpy package.json dist",
     "build": "npm run build:clean && npm run build:config && tsc --skipLibCheck"
   },
-  "author": "Tom Shaw",
+  "author": "Dusan Veselinovic",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.24.4",
