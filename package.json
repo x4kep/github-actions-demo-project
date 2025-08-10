@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "node --require ts-node/register src/index.ts",
-    "start": "node dist/index.js",
+    "dev": "npm run start --stage local",
+    "start": "node --require ts-node/register src/index.ts",
     "build:clean": "rm -rf ./dist/* && mkdir -p ./dist/logs",
-    "build:config": "cp ./src/config.json ./dist/config.json && cp ./package.json ./dist/package.json",
+    "build:config": "cp ./package.json ./dist/package.json",
     "build": "npm run build:clean && npm run build:config && tsc --skipLibCheck"
   },
   "author": "Tom Shaw",
