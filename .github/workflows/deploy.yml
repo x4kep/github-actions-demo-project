@@ -18,25 +18,27 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
         run: npm run build
 
-      - name: Check dist folder contents
-        run: ls -la dist
+      - name: Copy package.json into dist
+        run: cp package.json dist/
 
-      - name: Zip build folder
-        run: zip -r my-app.zip dist
+      - name: Copy Procfile into dist (optional)
+        run: |
+          if [ -f Procfile ]; then
+            cp Procfile dist/
+          else
+            echo "No Procfile found, skipping"
+          fi
+
+      - name: Zip build folder with package.json and Procfile
+        run: |
+          cd dist
+          zip -r ../my-app.zip .
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
