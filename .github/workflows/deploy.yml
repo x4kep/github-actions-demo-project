@@ -20,6 +20,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
+
       - name: Zip application bundle
         run: zip -r my-app.zip .
 
