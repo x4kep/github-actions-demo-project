@@ -16,6 +16,9 @@ jobs:
       - name: Zip application bundle
         run: zip -r my-app.zip . -x "*.git*" "node_modules/*"
 
+      - name: List files for debugging
+        run: ls -la
+
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
