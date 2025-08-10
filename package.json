@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "npm run start --stage local",
     "start": "node --require ts-node/register src/index.ts",
-    "build:clean": "npx rimraf ./dist && mkdir dist\\logs",
+    "build:clean": "node clean.js",
     "build:config": "npx cpy package.json dist",
     "build": "npm run build:clean && npm run build:config && tsc --skipLibCheck"
   },
@@ -21,6 +21,8 @@
     "@types/supertest": "^6.0.2",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
+    "mkdirp": "^3.0.1",
+    "rimraf": "^6.0.1",
     "superagent": "^8.1.2",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
