@@ -23,7 +23,7 @@ export async function getRecipe(req, res) {
         "1/2 tsp paprika",
         "1/4 tsp red pepper flakes",
         "1/4 cup parsley",
-        "8 oz fettuccine pasta"
+        "8 oz fettuccine pasta 123"
       ],
       cookingTime: 30,
       instructions: [
