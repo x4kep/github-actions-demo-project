@@ -3,7 +3,7 @@ name: Deploy to AWS Elastic Beanstalk
 on:
   push:
     branches:
-      - main # triggers deployment on push to main branch
+      - main
 
 jobs:
   deploy:
@@ -18,19 +18,19 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-north-1 # replace with your AWS region
+          aws-region: eu-north-1
+
+      - name: Zip application bundle
+        run: zip -r my-app-${{ github.sha }}.zip .
+
+      - name: Upload application bundle to S3
+        run: aws s3 cp my-app-${{ github.sha }}.zip s3://my-eb-deployments-12345/
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          application_name: node_simple_api # replace with your Elastic Beanstalk app name
-          environment_name: Nodesimpleapp-env # replace with your EB environment name
-          version_label: ${{ github.sha }} # use commit SHA as version label
-          region: eu-north-1 # replace with your AWS region
-          bucket_name: my-eb-deployments-12345 # replace with your S3 bucket for EB deployment
-          bucket_key: my-app-${{ github.sha }}.zip
-
-      - name: Upload application bundle to S3
-        run: |
-          zip -r my-app-${{ github.sha }}.zip . 
-          aws s3 cp my-app-${{ github.sha }}.zip s3://my-s3-bucket-for-eb/
+          application_name: node_simple_api
+          environment_name: Nodesimpleapp-env
+          version_label: my-app-${{ github.sha }}.zip
+          region: eu-north-1
+          existing_bucket_name: my-eb-deployments-12345
